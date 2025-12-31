@@ -1,0 +1,14 @@
+# YOLO数据集配置文件
+path: D:\Graduate student tasks\ore_size_grain\yolo_dataset_seg  # 数据集根目录
+train: images\train  # 训练图像目录
+val: images\val  # 验证图像目录
+test: images\test  # 测试图像目录 (可选)
+
+# 类别
+nc: 1  # 类别数量
+names: ['ore']  # 类别名称列表
+
+# 训练时使用的标签目录
+train_labels: labels\train
+val_labels: labels\val
+test_labels: labels\test
