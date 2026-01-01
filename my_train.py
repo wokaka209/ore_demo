@@ -35,9 +35,10 @@ def train_model():
     # 获取最佳批次大小
     batch_size = 16
     print(f"使用批次大小: {batch_size}")
-    
+
+    my_bestpt = 'D:/Graduate student tasks/ore_size_grain/runs/train/ore_seg_training_v2/weights/best.pt'
     # 加载预训练模型
-    model = YOLO('D:/Graduate student tasks/ore_size_grain/runs/train/ore_seg_training_v2/weights/best.pt')
+    model = YOLO('yolo11n-seg.pt')
     
     # 训练参数
     epochs = 150  # 增加训练轮数以进一步降低seg_loss
@@ -50,7 +51,7 @@ def train_model():
         batch=batch_size,  # 批次大小
         device=device,
         project='runs/train',  # 项目路径
-        name='ore_seg_training_v2',  # 新的训练运行名称
+        name='ore_seg_training_v3',  # 新的训练运行名称
         save=True,  # 保存模型
         verbose=True,
         patience=0,  # 早停轮数
