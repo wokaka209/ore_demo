@@ -2,6 +2,7 @@ import os
 import torch
 from ultralytics import YOLO
 import yaml
+import pandas as pd
 
 def get_optimal_batch_size():
     """
@@ -68,6 +69,19 @@ def train_model():
     
     print("训练完成！")
     print(f"最佳权重保存在: {results.save_dir}/weights/best.pt")
+    
+    # 检查并复制结果CSV文件
+    import glob
+    result_csv_files = glob.glob(os.path.join(results.save_dir, 'results.csv'))
+    if result_csv_files:
+        csv_path = result_csv_files[0]
+        output_csv = os.path.join(results.save_dir, f'training_results.csv')
+        import shutil
+        shutil.copy2(csv_path, output_csv)
+        print(f"训练结果CSV文件已保存至: {output_csv}")
+    else:
+        print("警告: 未找到训练结果CSV文件")
+    
     return results
 
 if __name__ == "__main__":
