@@ -116,6 +116,9 @@ def predict_with_model():
                 boxes = result.boxes  # 边界框
                 names = result.names  # 类别名称
                 
+                # 存储所有颗粒的粒径信息用于统计
+                all_particles_info = []
+                
                 # 遍历每个检测到的对象
                 for j, (mask,box) in enumerate(zip(masks,boxes)):
                     # 调整掩码大小以匹配原图
@@ -150,6 +153,14 @@ def predict_with_model():
                         cv2.putText(result_img, axes_text, (x, y+10), 
                                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
                         
+                        # 保存颗粒信息用于后续统计
+                        all_particles_info.append({
+                            'id': j+1,
+                            'diameter': diameter,
+                            'major_axis': major_axis,
+                            'minor_axis': minor_axis
+                        })
+                        
                         # # 绘制椭圆（如果可用）
                         # if major_axis is not None and minor_axis is not None:
                         #     # 这里简化处理，绘制一个矩形来表示颗粒大小
@@ -157,6 +168,57 @@ def predict_with_model():
                         #     pt1 = (int(x - minor_axis/2 * size_factor), int(y - major_axis/2 * size_factor))
                         #     pt2 = (int(x + minor_axis/2 * size_factor), int(y + major_axis/2 * size_factor))
                         #     cv2.rectangle(result_img, pt1, pt2, (0, 255, 0), 1)
+        
+        # 绘制粒径分布信息到图片右下角
+        if all_particles_info:
+            # 计算不同粒径范围的颗粒数量
+            diameters = [p['diameter'] for p in all_particles_info]
+            
+            # 按粒径范围统计
+            range_0_20 = sum(1 for d in diameters if 0 <= d <= 20)
+            range_21_40 = sum(1 for d in diameters if 21 <= d <= 40)
+            range_41_60 = sum(1 for d in diameters if 41 <= d <= 60)
+            range_61_80 = sum(1 for d in diameters if 61 <= d <= 80)
+            range_81_100 = sum(1 for d in diameters if 81 <= d <= 100)
+            range_100_plus = sum(1 for d in diameters if d > 100)
+            total_particles = len(diameters)
+            
+            # 设置文本参数
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 0.6
+            thickness = 1
+            
+            # 计算文本大小和位置
+            stats_text = [
+                f'0_20_dia:{range_0_20}',
+                f'21_40_dia:{range_21_40}',
+                f'41_60_dia:{range_41_60}',
+                f'61_80_dia:{range_61_80}',
+                f'81_100_dia:{range_81_100}',
+                f'100_plus_dia:{range_100_plus}',
+                f'total_ore_num:{total_particles}'
+            ]
+            
+            # 获取图片尺寸
+            img_height, img_width = result_img.shape[:2]
+            
+            # 设置右下角的起始位置
+            margin = 10
+            line_height = 20
+            start_y = img_height - (len(stats_text) * line_height + margin)
+            
+            # 绘制背景矩形
+            bg_start_x = img_width - 200
+            bg_start_y = start_y - 5
+            bg_end_x = img_width - margin
+            bg_end_y = start_y + len(stats_text) * line_height + 5
+            cv2.rectangle(result_img, (bg_start_x, bg_start_y), (bg_end_x, bg_end_y), (0, 0, 0), -1)
+            
+            # 绘制统计信息
+            for idx, text in enumerate(stats_text):
+                y_pos = start_y + idx * line_height
+                cv2.putText(result_img, text, (img_width - 190, y_pos), 
+                           font, font_scale, (255, 255, 255), thickness)
         
         # 保存结果图片
         output_path = output_dir / f"pred_{img_path.name}"
