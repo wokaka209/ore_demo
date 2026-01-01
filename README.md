@@ -36,11 +36,6 @@ ore_size_grain/
 └── README.md
 ```
 
-## 安装依赖
-
-```bash
-pip install ultralytics torch torchvision opencv-python numpy pandas matplotlib plotly
-```
 
 ## 数据准备
 
@@ -67,11 +62,7 @@ yolo_dataset_seg/
 python my_train.py
 ```
 
-训练脚本会：
-- 自动检测GPU内存并设置合适的批次大小
-- 加载预训练模型进行微调
-- 保存训练结果和权重文件
-- 禁用绘图功能以避免PR曲线错误
+
 
 ### 2. 进行预测
 
@@ -79,11 +70,7 @@ python my_train.py
 python my_prediction.py
 ```
 
-预测脚本会：
-- 加载训练好的模型
-- 对指定图像进行分割预测
-- 保存带有分割掩码的结果图像
-- 生成粒径分析结果
+
 
 ### 3. 数据格式转换
 
@@ -97,8 +84,7 @@ python datasets2yolo.py
 
 - **图像尺寸**：640x640
 - **批次大小**：根据GPU内存自适应（8GB显存使用4）
-- **训练轮数**：100轮（可调整）
-- **早停轮数**：50轮
+- **训练轮数**：100轮
 - **数据增强**：启用随机增强
 - **学习率**：自适应调整
 
@@ -128,13 +114,3 @@ python datasets2yolo.py
 - `project`: 项目保存路径
 - `name`: 训练任务名称
 
-## 注意事项
-
-1. 确保有足够的GPU内存以支持训练
-2. 数据集应按照YOLO格式正确组织
-3. 标注文件应与图像文件名对应
-4. 训练过程中会自动保存最佳权重
-
-## 贡献
-
-欢迎提交Issue和Pull Request来改进本项目。
