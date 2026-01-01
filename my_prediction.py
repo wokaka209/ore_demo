@@ -212,13 +212,13 @@ def predict_with_model():
             bg_start_y = start_y - 5
             bg_end_x = img_width - margin
             bg_end_y = start_y + len(stats_text) * line_height + 5
-            cv2.rectangle(result_img, (bg_start_x, bg_start_y), (bg_end_x, bg_end_y), (0, 0, 0), -1)
+            cv2.rectangle(result_img, (bg_start_x, bg_start_y), (bg_end_x, bg_end_y), (255, 255, 255), -1)
             
             # 绘制统计信息
             for idx, text in enumerate(stats_text):
                 y_pos = start_y + idx * line_height
                 cv2.putText(result_img, text, (img_width - 190, y_pos), 
-                           font, font_scale, (255, 255, 255), thickness)
+                            fontFace=font, fontScale=font_scale, color=(0, 0, 255), thickness=2)
         
         # 保存结果图片
         output_path = output_dir / f"pred_{img_path.name}"
